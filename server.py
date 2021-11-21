@@ -83,6 +83,25 @@ def run_server():
             else:
                 return jsonify({'code': 'fail'})
 
+    @app.route('/api/v0/propuesta/<int:id>', methods=['GET', 'DELETE'])
+    def propuesta(id = None):
+        if request.method == 'DELETE' and id is not None:
+            if bd.eliminar_propuesta(id):
+                return jsonify(code='ok')
+            else:
+                return json(code='error')
+
+
+    @app.route('/api/v0/propuestas/<string:query>', methods=['GET'])
+    @app.route('/api/v0/propuestas/', methods=['GET'])
+    def obtener_propuestas(query = ''):
+        if request.method == 'GET':
+            print(query)
+            return jsonify({
+                'code': 'ok', 
+                'propuestas': bd.get_propuestas(query)
+                })
+
     app.run(debug=True)
 
 if __name__ == '__main__':

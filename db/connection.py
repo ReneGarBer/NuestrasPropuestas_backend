@@ -77,4 +77,37 @@ class Database:
         except Exception as e:
             print(e)
             return False
+    
+    def get_propuestas(self, keywords = ''):
+        query = """SELECT 
+        id, titulo, extracto, archivo, estado, partido, fecha, autor
+        FROM propuestas WHERE contenido LIKE %s """
         
+        print(query)
+        # return []
+        self.cursor.execute(query, ("%" + keywords + "%",))
+        propuestas = []
+
+        for row in self.cursor.fetchall():
+            propuesta = {
+                'id': row[0],
+                'titulo': row[1],
+                'extracto': row[2],
+                'archivo': row[3],
+                'estado': row[4],
+                'partido': row[5],
+                'fecha': row[6],
+                'autor': row[7]
+            }
+
+            propuestas.append(propuesta)
+
+        return propuestas
+
+    def eliminar_propuesta(self, id):
+        query = "DELETE FROM propuestas WHERE id = %s"
+        self.cursor.execute(query, (id,))
+        self.connection.commit()
+
+        return self.cursor.rowcount
+
