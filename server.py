@@ -44,6 +44,13 @@ def run_server():
                 print(e)
                 return jsonify({'code': 'error'})
 
+    @app.route('/api/v0/file/<string:filename>', methods=['GET'])
+    def get_file(filename = None):
+        if request.method == 'GET' and filename is not None:
+            return jsonify({'code': 'ok'})
+        return jsonify({'code', 'not-ok'})
+
+
     @app.route('/api/v0/admin/files', methods=['POST'])
     def read_file():
         if request.method == 'POST':
@@ -53,8 +60,13 @@ def run_server():
                 
             files = request.files.getlist('files[]')
 
-            if pdf_utils.read_file(files):
-                return jsonify({'code': 'ok'})
+            done, filename = pdf_utils.read_file(files)
+            if done:
+                return jsonify({
+                    'code': 'ok', 
+                    'pdf': filename, 
+                    'ocr': filename + '.txt' 
+                    })
             else:
                 return jsonify({'code': 'fail'})
 
