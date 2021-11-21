@@ -87,8 +87,9 @@ class bot_scraping:
     def find_pdf_links_dy_locator(self,by,locator) -> list[str]:
         self.element = self.driver.find_elements(by,locator)
         for link in self.element:
-            if ".pdf" in link.get_attribute('href'):
-                self.links.append(link.get_attribute('href')) 
+            if link.get_attribute('href') != None:
+                if ".pdf" in link.get_attribute('href'):
+                    self.links.append(link.get_attribute('href')) 
         return self.links
 
     def find_pdf_links(self)->list[str]:
@@ -96,8 +97,7 @@ class bot_scraping:
         for link in self.element:
             if link.get_attribute('href') != None:
                 if ".pdf" in link.get_attribute('href'):
-                    #self.links.append(link.get_attribute('href'))
-                    print(link.get_attribute('href'))
+                    self.links.append(link.get_attribute('href'))
         return self.links
 
     def insert_key_into(self,keys: str,by,locator)-> None:
