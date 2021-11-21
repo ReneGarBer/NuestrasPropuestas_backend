@@ -5,6 +5,7 @@ import pytesseract
 import sys
 from pdf2image import convert_from_path
 import os  
+from random import randint
 
 class PDFToText:
     def __init__(self):
@@ -12,6 +13,9 @@ class PDFToText:
 
     def allowed_file(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
+
+    def file_path(self, filename):
+        return os.path.join( os.getcwd() + '/upload/' + filename)
 
     def read_file(self, files):
         file = files[0]
@@ -29,13 +33,13 @@ class PDFToText:
         if pages <= 0:
             return False 
 
-        done = self.ocr(pages)
-
-        return done, self.filename
+        done, extract = self.ocr(pages)
+        
+        return done, self.filename, extract
 
     def save_file(self, file):
         if file and self.allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = str(randint(0,9999)) + '_' + secure_filename(file.filename)
             self.filename = filename
             path = os.path.join( os.getcwd() + '/upload/' + filename)
             file.save(os.path.join( os.getcwd() + '/upload/' + filename))
@@ -67,11 +71,18 @@ class PDFToText:
 
                     print(text)
 
+                    if i == 1:
+                        extract = text
+
                     text = text.replace('-\n', '')    
                     f.write(text)
 
-            return True
+            return True, extract
         except Exception as e:
             print(e)
-            return False
+            return False, None
 
+    def read_content(self, filename):
+        with open(self.file_path(filename),'r', encoding='utf-8') as f:
+            text = f.read()
+        return text

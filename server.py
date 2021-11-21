@@ -1,4 +1,5 @@
-from flask import Flask, json, jsonify, request
+import os
+from flask import Flask, json, jsonify, request, send_file
 from db.connection import Database
 from flask_cors import CORS
 from pdftotext import PDFToText
@@ -47,8 +48,7 @@ def run_server():
     @app.route('/api/v0/file/<string:filename>', methods=['GET'])
     def get_file(filename = None):
         if request.method == 'GET' and filename is not None:
-            return jsonify({'code': 'ok'})
-        return jsonify({'code', 'not-ok'})
+            return send_file(pdf_utils.file_path(filename), as_attachment=False)
 
 
     @app.route('/api/v0/admin/files', methods=['POST'])
@@ -60,13 +60,26 @@ def run_server():
                 
             files = request.files.getlist('files[]')
 
-            done, filename = pdf_utils.read_file(files)
+            done, filename, extract = pdf_utils.read_file(files)
             if done:
                 return jsonify({
                     'code': 'ok', 
                     'pdf': filename, 
-                    'ocr': filename + '.txt' 
+                    'ocr': filename + '.txt',
+                    'extract': extract 
                     })
+            else:
+                return jsonify({'code': 'fail'})
+
+    @app.route('/api/v0/admin/propuesta/<int:id>', methods=['PATCH'])
+    @app.route('/api/v0/admin/propuesta', methods=['POST'])
+    def propuestas(id = None):
+        if request.method == 'POST' and id is None:
+            data = request.get_json()
+            print(data)
+            
+            if bd.nueva_propuesta(data):
+                return jsonify({'code': 'ok'})
             else:
                 return jsonify({'code': 'fail'})
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-11-2021 a las 18:46:11
+-- Tiempo de generación: 21-11-2021 a las 21:52:09
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 7.3.29
 
@@ -38,7 +38,7 @@ CREATE TABLE `administradores` (
 --
 
 INSERT INTO `administradores` (`id`, `username`, `password`) VALUES
-(2, 'ivan', 'cabd49c50cbca438a9ad32c464d4f2c3e4c051d62ee25969e405b519ee9e');
+(3, 'ivan', 'cabd49c50cbca438a9ad32c464d4f2c3e4c051d62ee25969e405b519ee9e935c');
 
 -- --------------------------------------------------------
 
@@ -49,7 +49,9 @@ INSERT INTO `administradores` (`id`, `username`, `password`) VALUES
 CREATE TABLE `propuestas` (
   `id` int(11) NOT NULL,
   `titulo` varchar(120) NOT NULL,
+  `extracto` text NOT NULL,
   `contenido` text NOT NULL,
+  `archivo` varchar(100) NOT NULL,
   `estado` varchar(30) NOT NULL,
   `partido` varchar(50) NOT NULL,
   `fecha` date NOT NULL,
@@ -83,7 +85,7 @@ ALTER TABLE `propuestas`
 -- AUTO_INCREMENT de la tabla `administradores`
 --
 ALTER TABLE `administradores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `propuestas`
