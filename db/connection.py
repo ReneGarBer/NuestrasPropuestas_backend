@@ -2,7 +2,6 @@ import mysql.connector
 import hashlib
 from pdftotext import PDFToText
 
-
 class Database:
     def __init__(self):
         try:
@@ -83,8 +82,6 @@ class Database:
         id, titulo, extracto, archivo, estado, partido, fecha, autor
         FROM propuestas WHERE contenido LIKE %s """
         
-        print(query)
-        # return []
         self.cursor.execute(query, ("%" + keywords + "%",))
         propuestas = []
 
@@ -111,3 +108,50 @@ class Database:
 
         return self.cursor.rowcount
 
+    def get_propuesta(self, id):
+        query = """SELECT 
+        id, titulo, extracto, archivo, estado, partido, fecha, autor, archivo
+        FROM propuestas WHERE id = %s """
+
+        self.cursor.execute(query, (id,))
+
+        row = self.cursor.fetchone()
+        propuesta = {}
+
+        if row:
+            propuesta = {
+                'id': row[0],
+                'titulo': row[1],
+                'extracto': row[2],
+                'archivo': row[3],
+                'estado': row[4],
+                'partido': row[5],
+                'fecha': row[6],
+                'autor': row[7],
+                'archivo': row[8]
+            }
+        
+        return propuesta
+
+    def modificar_propuesta(self, data, id):
+        try:
+            titulo = data['titulo']
+            extracto = data['extracto']
+            contenido = self.utils.read_content(data['pdf'] + '.txt')
+            archivo = data['pdf']
+            estado = data['estado']
+            partido = data['partido']
+            fecha = data['fecha']
+            autor = data['autor']
+
+            query = """UPDATE propuestas SET 
+                titulo = %s, extracto = %s, contenido =%s, archivo = %s, estado = %s, partido = %s, fecha = %s, autor = %s
+                WHERE id = %s"""
+
+
+            self.cursor.execute(query, (titulo, extracto, contenido, archivo, estado, partido, fecha, autor, id))
+            self.connection.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False

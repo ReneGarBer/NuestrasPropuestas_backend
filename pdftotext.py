@@ -5,6 +5,7 @@ import pytesseract
 import sys
 from pdf2image import convert_from_path
 import os  
+from shutil import copyfile
 from random import randint
 
 class PDFToText:
@@ -39,10 +40,13 @@ class PDFToText:
 
     def save_file(self, file):
         if file and self.allowed_file(file.filename):
-            filename = str(randint(0,9999)) + '_' + secure_filename(file.filename)
+            secure = secure_filename(file.filename)
+            filename = str(randint(0,9999)) + '_' + secure
             self.filename = filename
             path = os.path.join( os.getcwd() + '/upload/' + filename)
+            copy = os.path.join( os.getcwd() + '/upload/' + secure)
             file.save(os.path.join( os.getcwd() + '/upload/' + filename))
+            copyfile(path, copy)
             return True, path
         else:
             return False, None
@@ -61,17 +65,17 @@ class PDFToText:
 
     def ocr(self, count):
         try:
-            file_limit = count - 1
+            file_limit = count
             outfile = 'upload/' + self.filename + '.txt'
 
             with open(outfile, 'w', encoding='utf-8') as f:
-                for i in range(1, file_limit + 1):
+                for i in range(file_limit):
                     filename = "temp/page_"+str(i)+".jpg"
                     text = str(((pytesseract.image_to_string(Image.open(filename)))))
 
                     print(text)
 
-                    if i == 1:
+                    if i == 0:
                         extract = text
 
                     text = text.replace('-\n', '')    

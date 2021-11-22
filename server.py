@@ -1,5 +1,4 @@
-import os
-from flask import Flask, json, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file
 from db.connection import Database
 from flask_cors import CORS
 from pdftotext import PDFToText
@@ -71,7 +70,7 @@ def run_server():
             else:
                 return jsonify({'code': 'fail'})
 
-    @app.route('/api/v0/admin/propuesta/<int:id>', methods=['PATCH'])
+    @app.route('/api/v0/admin/propuesta/<int:id>', methods=['PUT'])
     @app.route('/api/v0/admin/propuesta', methods=['POST'])
     def propuestas(id = None):
         if request.method == 'POST' and id is None:
@@ -82,6 +81,14 @@ def run_server():
                 return jsonify({'code': 'ok'})
             else:
                 return jsonify({'code': 'fail'})
+        elif request.method == 'PUT' and id is not None:
+            data = request.get_json()
+            print(data)
+
+            if bd.modificar_propuesta(data, id):
+                return jsonify({'code': 'ok'})
+            else:
+                return jsonify({'code': 'fail'})
 
     @app.route('/api/v0/propuesta/<int:id>', methods=['GET', 'DELETE'])
     def propuesta(id = None):
@@ -89,7 +96,9 @@ def run_server():
             if bd.eliminar_propuesta(id):
                 return jsonify(code='ok')
             else:
-                return json(code='error')
+                return jsonify(code='error')
+        elif request.method == 'GET' and id is not None:
+            return jsonify(code='ok', propuesta=bd.get_propuesta(id))
 
 
     @app.route('/api/v0/propuestas/<string:query>', methods=['GET'])
