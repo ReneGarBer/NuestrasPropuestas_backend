@@ -45,7 +45,10 @@ try:
         links = robot.find_pdf_links()
 
         #itera sobre los links obtenidos
-        for link in links:
+        for i, link in enumerate(links):
+
+            if i == 50: #Para que no suba todo
+                break
 
             pdf = requests.get(link,stream=True)
             name = link.rsplit('/',1)[-1]
@@ -65,7 +68,7 @@ try:
                 texto = tipos[value] + '. \n\n'+ text
                 f.write(texto)
             
-            if error_text in text:
+            if error_text not in text:
                 pdfutils.copy_to_upload(name, folder )
                 pdfutils.copy_to_upload(name + '.txt', folder)
 
@@ -75,7 +78,7 @@ try:
                     'pdf': name,
                     'estado': 'Desconocido',
                     'partido': 'Pendiente',
-                    'fecha': '2021-23-11',
+                    'fecha': '2021-11-01',
                     'autor': 'Subido desde bot',
                     'subido': '4'
                 }
