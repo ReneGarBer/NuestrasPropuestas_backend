@@ -80,7 +80,7 @@ class Database:
     def get_propuestas(self, keywords = ''):
         query = """SELECT 
         id, titulo, extracto, archivo, estado, partido, fecha, autor
-        FROM propuestas WHERE contenido LIKE %s """
+        FROM propuestas WHERE contenido LIKE %s LIMIT 200"""
         
         self.cursor.execute(query, ("%" + keywords + "%",))
         propuestas = []

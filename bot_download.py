@@ -86,6 +86,7 @@ class bot_scraping:
 
     def find_pdf_links_dy_locator(self,by,locator) -> list[str]:
         self.element = self.driver.find_elements(by,locator)
+        self.links = []
         for link in self.element:
             if link.get_attribute('href') != None:
                 if ".pdf" in link.get_attribute('href'):
@@ -94,6 +95,7 @@ class bot_scraping:
 
     def find_pdf_links(self)->list[str]:
         self.element = self.driver.find_elements(By.TAG_NAME,'a')
+        self.links = []
         for link in self.element:
             if link.get_attribute('href') != None:
                 if ".pdf" in link.get_attribute('href'):

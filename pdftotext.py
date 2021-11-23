@@ -15,8 +15,8 @@ class PDFToText:
     def allowed_file(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
 
-    def file_path(self, filename):
-        return os.path.join( os.getcwd() + '/upload/' + filename)
+    def file_path(self, filename, folder = 'upload'):
+        return os.path.join( os.getcwd() + '/' + folder + '/' + filename)
 
     def read_file(self, files):
         file = files[0]
@@ -90,3 +90,8 @@ class PDFToText:
         with open(self.file_path(filename),'r', encoding='utf-8') as f:
             text = f.read()
         return text
+
+    def copy_to_upload(self, origin, folder):
+        origin_path = self.file_path(origin, folder)
+        dest_path = self.file_path(origin)
+        copyfile(origin_path, dest_path)
